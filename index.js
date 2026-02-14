@@ -19,7 +19,7 @@ mongoose.connect("mongodb://localhost:27017/Yelpcamp", {
 		console.log("Database is running!")
 	})
 	.catch((err) => {
-		console.log("Database is not running!!", err)
+		console.log(err, "Database is not running!!")
 	})
 app.get("/campgrounds", async (req, res) => {
 	const campgrounds = await Campground.find({})
