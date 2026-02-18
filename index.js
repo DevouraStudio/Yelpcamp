@@ -8,6 +8,7 @@ const ejsMate = require("ejs-mate")
 const catchAsync = require("./utilities/catchAsync")
 const ExpressError = require("./utilities/ExpressError")
 const { campgroundSchema } = require("./schemas.js")
+const Review = require("./models/review")
 app.set("view engine", "ejs")
 app.set("views", path.join(__dirname, "views"))
 app.engine("ejs", ejsMate)
@@ -59,6 +60,15 @@ app.put("/campgrounds/:id", validateCampground, catchAsync(async (req, res) => {
 app.delete("/campgrounds/:id", catchAsync(async (req, res) => {
 	await Campground.findByIdAndDelete(req.params.id, { useFindAndModify: false })
 	res.redirect("/campgrounds")
+}))
+app.post("/campgrounds/:id/review", catchAsync(async (req, res) => {
+	const { id } = req.params
+	const campground = await Campground.findById(id)
+	const review = await new Review(req.body.review)
+	campground.reviews.push(review)
+	await campground.save()
+	await review.save()
+	res.redirect(`/campgrounds/${id}`)
 }))
 app.all("*", (req, res, next) => {
 	next(new ExpressError("Page Not Found!", 404))
