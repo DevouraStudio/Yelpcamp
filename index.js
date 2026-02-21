@@ -7,7 +7,7 @@ const methodOverride = require("method-override")
 const ejsMate = require("ejs-mate")
 const catchAsync = require("./utilities/catchAsync")
 const ExpressError = require("./utilities/ExpressError")
-const { campgroundSchema } = require("./schemas.js")
+const { campgroundSchema, reviewSchema } = require("./schemas.js")
 const Review = require("./models/review")
 app.set("view engine", "ejs")
 app.set("views", path.join(__dirname, "views"))
@@ -31,6 +31,15 @@ const validateCampground = (req, res, next) => {
 		const msg = error.details.map(el => el.message).join(",")
 		throw new ExpressError(msg, 400)
 	}
+	next()
+}
+const validateReview = (req, res, next) => {
+	const { error } = reviewSchema.validate(req.body)
+	if (error) {
+		const msg = error.details.map(el => el.message).join(",")
+		throw new ExpressError(msg, 400)
+	}
+	next()
 }
 app.get("/campgrounds", catchAsync(async (req, res) => {
 	const campgrounds = await Campground.find({})
@@ -61,7 +70,7 @@ app.delete("/campgrounds/:id", catchAsync(async (req, res) => {
 	await Campground.findByIdAndDelete(req.params.id, { useFindAndModify: false })
 	res.redirect("/campgrounds")
 }))
-app.post("/campgrounds/:id/review", catchAsync(async (req, res) => {
+app.post("/campgrounds/:id/reviews", validateReview, catchAsync(async (req, res) => {
 	const { id } = req.params
 	const campground = await Campground.findById(id)
 	const review = await new Review(req.body.review)
