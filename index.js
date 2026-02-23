@@ -7,6 +7,18 @@ const ejsMate = require("ejs-mate")
 const ExpressError = require("./utilities/ExpressError")
 const campgrounds = require("./routes/campgrounds")
 const reviews = require("./routes/reviews")
+const session = require("express-session")
+const flash = require("connect-flash")
+const sessionConfig = {
+	secret: "notasuitablesecretstring",
+	resave: false,
+	saveUninitialized: true,
+	cookie: {
+		httpOnly: true,
+		expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
+		maxAge: 7 * 24 * 60 * 60 * 1000
+	}
+}
 app.set("view engine", "ejs")
 app.set("views", path.join(__dirname, "views"))
 app.engine("ejs", ejsMate)
@@ -24,6 +36,13 @@ mongoose.connect("mongodb://localhost:27017/Yelpcamp", {
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride("_method"))
 app.use(express.static(path.join(__dirname, "public")))
+app.use(session(sessionConfig))
+app.use(flash())
+app.use((req, res, next) => {
+	res.locals.success = req.flash("success")
+	res.locals.error = req.flash("error")
+	next()
+})
 app.use("/campgrounds", campgrounds)
 app.use("/campgrounds/:id/reviews", reviews)
 app.all("*", (req, res, next) => {
