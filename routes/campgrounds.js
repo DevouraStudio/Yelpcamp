@@ -4,14 +4,20 @@ const catchAsync = require("../utilities/catchAsync")
 const Campground = require("../models/campground")
 const { validateCampground, isLoggedIn, isAuthor } = require("../middlewares")
 router.get("/", catchAsync(async (req, res) => {
-	const campgrounds = await Campground.find({})
+	const campgrounds = await Campground.find({}).sort({ _id: 1 })
 	res.render("campgrounds/index", { campgrounds })
 }))
 router.get("/new", isLoggedIn, (req, res) => {
 	res.render("campgrounds/new")
 })
 router.get("/:id", catchAsync(async (req, res) => {
-	const campground = await Campground.findById(req.params.id).populate("reviews").populate("author")
+	const campground = await Campground.findById(req.params.id).populate({
+		path: "reviews",
+		populate: {
+			path: "author"
+		}
+	}).populate("author")
+	console.log(campground)
 	if (!campground) {
 		req.flash("error", "Cannot find that campground!")
 		return res.redirect("/campgrounds")
