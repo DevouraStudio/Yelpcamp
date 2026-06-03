@@ -16,10 +16,10 @@ const CampgroundSchema = new Schema({
 		ref: "User"
 	}
 })
-CampgroundSchema.post("findOneAndDelete", async(doc) => {
+CampgroundSchema.post("findOneAndDelete", async (doc) => {
 	if (doc) {
 		await Review.deleteMany({
-			_id: {$in: doc.reviews}
+			_id: { $in: doc.reviews }
 		})
 	}
 })
