@@ -31,7 +31,10 @@ module.exports.login = (req, res, next) => {
 	const redirectUrl = req.session.returnTo || "/campgrounds"
 	passport.authenticate("local", { failureFlash: true, failureRedirect: "/login" }, (err, user) => {
 		if (err) return next(err)
-		if (!user) return res.redirect("/login")
+		if (!user) {
+			req.flash("error", "Invalid username or password! Please try again.")
+			return res.redirect("/login")
+		}
 		req.logIn(user, (err) => {
 			if (err) return next(err)
 			req.flash("success", "Welcome back to Yelpcamp!")
