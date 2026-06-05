@@ -3,13 +3,13 @@ const router = express.Router()
 const catchAsync = require("../utilities/catchAsync")
 const users = require("../controllers/users")
 
-router.get("/register", users.renderRegister)
+router.route("/register")
+	.get(users.renderRegister)
+	.post(catchAsync(users.register))
 
-router.post("/register", catchAsync(users.register))
-
-router.get("/login", users.renderLogin)
-
-router.post("/login", users.login)
+	router.route("/login")
+	.get(users.renderLogin)
+	.post(users.login)
 
 router.get("/logout", users.logout)
 
