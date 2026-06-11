@@ -1,12 +1,18 @@
 const express = require("express")
+
 const router = express.Router()
+
 const catchAsync = require("../utilities/catchAsync")
+
 const { validateCampground, isLoggedIn, isAuthor } = require("../middlewares")
+
 const campgrounds = require("../controllers/campgrounds")
+
+const upload = require("../Arvancloud")
 
 router.route("/")
 	.get(catchAsync(campgrounds.index))
-	.post(validateCampground, isLoggedIn, catchAsync(campgrounds.createCampground))
+	.post(isLoggedIn, upload.array("image", 15), validateCampground, catchAsync(campgrounds.createCampground))
 
 router.get("/new", isLoggedIn, campgrounds.renderNewForm)
 
