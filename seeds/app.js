@@ -19,13 +19,25 @@ const sample = array => array[Math.floor(Math.random() * array.length)]
 const seedDB = async () => {
 	await Campground.deleteMany({})
 	for (let i = 0; i < 50; i++) {
-		const res = await axios.get("https://random.imagecdn.app/v1/image?width=500&height=500&category=nature&format=text")
+		const [res, res2] = await Promise.all([
+		axios.get("https://random.imagecdn.app/v1/image?width=500&height=500&category=nature&format=text"),
+		axios.get("https://random.imagecdn.app/v1/image?width=500&height=500&category=nature&format=text")
+		])
 		const random1000 = Math.floor(Math.random() * 1000)
 		const randomPrice = Math.floor(Math.random() * 20) + 10
 		const camp = new Campground({
 			location: `${cities[random1000].city}, ${cities[random1000].state}`,
 			title: `${sample(descriptors)} ${sample(places)}`,
-			image: res.data,
+			images: [
+				{
+					url: res.data,
+					filename: `Yelpcamp-${sample(descriptors)}-${sample(places)}`
+				},
+				{
+					url: res2.data,
+					filename: `Yelpcamp-${sample(descriptors)}-${sample(places)}-2`
+				}
+			],
 			price: randomPrice,
 			description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore corrupti suscipit itaque sed. Perspiciatis magnam maiores tempore nesciunt exercitationem consectetur atque porro corporis at tenetur blanditiis, dolorum quo ea! Impedit?",
 			author: "6a1eebc60fa8fd16e8d4ff83"
