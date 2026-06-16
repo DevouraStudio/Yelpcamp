@@ -1,5 +1,7 @@
 const Campground = require("../models/campground")
 
+const { deleteFromArvan } = require("../Arvancloud")
+
 module.exports.index = async (req, res) => {
 	const campgrounds = await Campground.find({}).sort({ _id: 1 })
 	res.render("campgrounds/index", { campgrounds })
@@ -46,6 +48,12 @@ module.exports.updateCampground = async (req, res) => {
 	const images = req.files.map(f => ({ url: f.location, filename: f.key }))
 	campground.images.push(...images)
 	await Campground.updateOne(req.body.campground, { useFindAndModify: false })
+	if (req.body.deleteImage) {
+		for (let filename of req.body.deleteImage) {
+			await deleteFromArvan(filename)
+		}
+		await campground.updateOne({ $pull: { images: { filename: { $in: req.body.deleteImage } } } })
+	}
 	await campground.save()
 	req.flash("success", "Campground updated successfully!")
 	res.redirect(`/campgrounds/${campground._id}`)
