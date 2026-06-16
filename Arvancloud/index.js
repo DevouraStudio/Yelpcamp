@@ -1,6 +1,9 @@
 const AWS = require('aws-sdk');
+
 const multer = require('multer');
+
 const multerS3 = require('multer-s3');
+
 const path = require('path');
 
 const s3 = new AWS.S3({
@@ -11,7 +14,7 @@ const s3 = new AWS.S3({
 	signatureVersion: 'v4',
 });
 
-const upload = multer({
+module.exports.upload = multer({
 	storage: multerS3({
 		s3,
 		bucket: process.env.ARVAN_BUCKET,
@@ -30,4 +33,11 @@ const upload = multer({
 	},
 });
 
-module.exports = upload;
+module.exports.deleteFromArvan = async (key) => {
+	await s3.deleteObject({
+		Bucket: process.env.ARVAN_BUCKET,
+		Key: key,
+	}).promise();
+};
+
+
