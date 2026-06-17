@@ -5,26 +5,34 @@
 		<% for (let campground of campgrounds) {%>
 			<div class="card mb-3">
 				<div class="row">
-					<div class="col-md-4">
-						<img src="<%= campground.images[0].url %>" alt="<%= campground.title %>" class="img-fluid">
-					</div>
-					<div class="col-md-8">
-						<div class="card-body">
-							<h2 class="card-title">
-								<%= campground.title %>
-							</h2>
-							<p class="card-text lead">
-								<%= campground.description %>
-							</p>
-							<p class="card-text lead">
-								<small class="text-muted">
-									<%= campground.location %>
-								</small>
-							</p>
-							<a href="/campgrounds/<%= campground._id %>" class="btn btn-primary">Go to <%=
-									campground.title %></a>
+					<% if (campground.images && campground.images.length> 0) { %>
+						<div class="col-md-4">
+							<img src="<%= campground.images[0].url %>" alt="<%= campground.images[0].filename %>"
+								class="img-fluid">
 						</div>
-					</div>
+						<% }else { %>
+							<div class="col-md-4">
+								<img src="https://i.postimg.cc/7ZT7Dj92/3BF0FD54-80C1-47E2-B652-9831B7B8F9FC.jpg"
+									alt="No image available!" class="img-fluid">
+							</div>
+							<% } %>
+								<div class="col-md-8">
+									<div class="card-body">
+										<h2 class="card-title">
+											<%= campground.title %>
+										</h2>
+										<p class="card-text lead">
+											<%= campground.description %>
+										</p>
+										<p class="card-text lead">
+											<small class="text-muted">
+												<%= campground.location %>
+											</small>
+										</p>
+										<a href="/campgrounds/<%= campground._id %>" class="btn btn-primary">Go to <%=
+												campground.title %></a>
+									</div>
+								</div>
 				</div>
 			</div>
 			<% } %>

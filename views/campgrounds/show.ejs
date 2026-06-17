@@ -3,15 +3,15 @@
 
 	<div class="row">
 		<div class="col-6">
-			<div id="carouselExampleIndicators" class="carousel slide">
-				<% if (campground.images) { %>
+			<div id="imageCarousel" class="carousel slide">
+				<% if (campground.images && campground.images.length> 0) { %>
 					<div class="carousel-indicators">
-						<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0"
-							class="active" aria-current="true" aria-label="Slide 1"></button>
+						<button type="button" data-bs-target="#imageCarousel" data-bs-slide-to="0" class="active"
+							aria-current="true" aria-label="Slide 1"></button>
 						<% campground.images.forEach((image, i)=> { %>
 							<% if (i> 0) { %>
-								<button type="button" data-bs-target="#carouselExampleIndicators"
-									data-bs-slide-to="<%= i %>" aria-label="Slide <%= i+1 %>"></button>
+								<button type="button" data-bs-target="#imageCarousel" data-bs-slide-to="<%= i %>"
+									aria-label="Slide <%= i+1 %>"></button>
 								<% } %>
 									<% }) %>
 					</div>
@@ -19,18 +19,18 @@
 						<div class="carousel-inner">
 							<% campground.images.forEach((image, i)=> { %>
 								<div class="carousel-item <% if (i === 0) { %>active<% } %>">
-									<img src="<%= image.url %>" class="d-block w-100" alt="<%= image.key %>">
+									<img src="<%= image.url %>" class="d-block w-100" alt="<%= image.filename %>">
 								</div>
 								<% }) %>
 						</div>
 						<% if (campground.images.length> 1) { %>
-							<button class="carousel-control-prev" type="button"
-								data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+							<button class="carousel-control-prev" type="button" data-bs-target="#imageCarousel"
+								data-bs-slide="prev">
 								<span class="carousel-control-prev-icon" aria-hidden="true"></span>
 								<span class="visually-hidden">Previous</span>
 							</button>
-							<button class="carousel-control-next" type="button"
-								data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+							<button class="carousel-control-next" type="button" data-bs-target="#imageCarousel"
+								data-bs-slide="next">
 								<span class="carousel-control-next-icon" aria-hidden="true"></span>
 								<span class="visually-hidden">Next</span>
 							</button>
