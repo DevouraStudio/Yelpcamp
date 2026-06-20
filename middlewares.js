@@ -1,7 +1,19 @@
 const Campground = require("./models/campground")
+
 const { campgroundSchema } = require("./schemas.js")
+
 const ExpressError = require("./utilities/ExpressError")
+
 const { reviewSchema } = require("./schemas.js")
+
+const Review = require("./models/review")
+
+const multer = require("multer")
+
+const { upload } = require("./Arvancloud")
+
+const uploadMulter = upload.array("campground[images]", 5)
+
 module.exports.validateCampground = (req, res, next) => {
 	const { error } = campgroundSchema.validate(req.body)
 	if (error) {
@@ -10,6 +22,7 @@ module.exports.validateCampground = (req, res, next) => {
 	}
 	next()
 }
+
 module.exports.validateReview = (req, res, next) => {
 	const { error } = reviewSchema.validate(req.body)
 	if (error) {
@@ -18,6 +31,7 @@ module.exports.validateReview = (req, res, next) => {
 	}
 	next()
 }
+
 module.exports.isLoggedIn = (req, res, next) => {
 	if (!req.isAuthenticated()) {
 		req.session.returnTo = req.originalUrl
@@ -26,6 +40,7 @@ module.exports.isLoggedIn = (req, res, next) => {
 	}
 	next()
 }
+
 module.exports.isAuthor = async (req, res, next) => {
 	const { id } = req.params
 	const campground = await Campground.findById(id)
@@ -35,6 +50,7 @@ module.exports.isAuthor = async (req, res, next) => {
 	}
 	next()
 }
+
 module.exports.isReviewAuthor = async (req, res, next) => {
 	const { id, reviewId } = req.params
 	const review = await Review.findById(reviewId)
@@ -43,4 +59,39 @@ module.exports.isReviewAuthor = async (req, res, next) => {
 		res.redirect(`/campgrounds/${id}`)
 	}
 	next()
+}
+
+module.exports.newUploadImage = (req, res, next) => {
+	uploadMulter(req, res, (err) => {
+		if (err instanceof multer.MulterError) {
+			if (err.code === "LIMIT_FILE_COUNT") {
+				req.flash("error", "Uploading more than 5 images each time is not permitted! Please try again!")
+				return res.redirect(`/campgrounds/new`)
+			}
+			if (err.code === "LIMIT_FILE_SIZE") {
+				req.flash("error", "Uploading an image over 15 MB is not permitted! Please try again!")
+				return res.redirect(`/campgrounds/new`)
+			}
+			next()
+		}
+
+	})
+}
+
+module.exports.editUploadImage = (req, res, next) => {
+	const { id } = req.params
+	uploadMulter(req, res, (err) => {
+		if (err instanceof multer.MulterError) {
+			if (err.code === "LIMIT_FILE_COUNT") {
+				req.flash("error", "Uploading more than 5 images each time is not permitted! Please try again!")
+				return res.redirect(`/campgrounds/${id}`)
+			}
+			if (err.code = "LIMIT_FILE_SIZE") {
+				req.flash("error", "Uploading an image over 15 MB is not permitted! Please try again!")
+				return res.redirect(`/campgrounds/${id}`)
+			}
+			next()
+		}
+
+	})
 }
