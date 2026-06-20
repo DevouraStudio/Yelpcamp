@@ -25,7 +25,7 @@ module.exports.upload = multer({
 			cb(null, uniqueName);
 		},
 	}),
-	limits: { fileSize: 50 * 1024 * 1024 },
+	limits: { fileSize: 15 * 1024 * 1024, files: 5 },
 	fileFilter: function (req, file, cb) {
 		const allowed = /jpeg|jpg|png|webp/;
 		const valid = allowed.test(path.extname(file.originalname).toLowerCase());
