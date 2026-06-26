@@ -2,6 +2,8 @@ const Campground = require("../models/campground")
 
 const { deleteFromArvan } = require("../Arvancloud")
 
+const axios = require("axios")
+
 module.exports.index = async (req, res) => {
 	const campgrounds = await Campground.find({}).sort({ _id: 1 })
 	res.render("campgrounds/index", { campgrounds })
@@ -27,8 +29,10 @@ module.exports.showCampground = async (req, res) => {
 
 module.exports.createCampground = async (req, res) => {
 	const campground = new Campground(req.body.campground)
+	const coordinates = await axios.get(`https://geocode.maps.co/search?q=${req.body.campground.location}&api_key=${process.env.GEOCODING_API_KEY}&format=geojson`)
 	campground.author = req.user._id
 	campground.images = req.files.map(f => ({ url: f.location, filename: f.key }))
+	campground.geometry = coordinates.data.features[0].geometry
 	await campground.save()
 	req.flash("success", "Successfully made a new campground!")
 	res.redirect(`/campgrounds/${campground._id}`)
