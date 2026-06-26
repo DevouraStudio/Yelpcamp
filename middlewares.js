@@ -72,9 +72,8 @@ module.exports.newUploadImage = (req, res, next) => {
 				req.flash("error", "Uploading an image over 15 MB is not permitted! Please try again!")
 				return res.redirect(`/campgrounds/new`)
 			}
-			next()
 		}
-
+		next()
 	})
 }
 
@@ -86,12 +85,11 @@ module.exports.editUploadImage = (req, res, next) => {
 				req.flash("error", "Uploading more than 5 images each time is not permitted! Please try again!")
 				return res.redirect(`/campgrounds/${id}`)
 			}
-			if (err.code = "LIMIT_FILE_SIZE") {
+			if (err.code === "LIMIT_FILE_SIZE") {
 				req.flash("error", "Uploading an image over 15 MB is not permitted! Please try again!")
 				return res.redirect(`/campgrounds/${id}`)
 			}
-			next()
 		}
-
+		next()
 	})
 }
