@@ -1,7 +1,3 @@
-if (process.env.NODE_ENV !== "production") {
-	require("dotenv").config()
-}
-
 const mongoose = require("mongoose")
 
 const { places, descriptors } = require("./seedHelpers")
@@ -37,15 +33,15 @@ const seedDB = async () => {
 		})
 		const random1000 = Math.floor(Math.random() * 1000)
 		const randomPrice = Math.floor(Math.random() * 20) + 10
-		const location = `${cities[random1000].city}, ${cities[random1000].state}`
-		const coordinates = await axios.get(`https://geocode.maps.co/search?q=${location}&api_key=${process.env.GEOCODING_API_KEY}&format=geojson`)
-		.catch((err) => {
-			console.log(err)
-			console.log("Geometry API is not working properly!!")
-		})
 		const camp = new Campground({
-			location: location,
-			geometry: coordinates.data.features[0].geometry,
+			location: `${cities[random1000].city}, ${cities[random1000].state}`,
+			geometry: {
+				type: "Point",
+				coordinates: [
+					cities[random1000].longitude,
+					cities[random1000].latitude
+				]
+			},
 			title: `${sample(descriptors)} ${sample(places)}`,
 			images: [
 				{
