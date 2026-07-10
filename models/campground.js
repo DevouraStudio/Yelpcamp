@@ -4,6 +4,8 @@ const Review = require("./review")
 
 const Schema = mongoose.Schema
 
+const opts = { toJSON: { virtuals: true } }
+
 const CampgroundSchema = new Schema({
 	title: String,
 	images: [
@@ -34,7 +36,7 @@ const CampgroundSchema = new Schema({
 		type: Schema.Types.ObjectId,
 		ref: "User"
 	}
-})
+}, opts)
 
 CampgroundSchema.post("findOneAndDelete", async (doc) => {
 	if (doc) {
@@ -42,6 +44,12 @@ CampgroundSchema.post("findOneAndDelete", async (doc) => {
 			_id: { $in: doc.reviews }
 		})
 	}
+})
+
+CampgroundSchema.virtual("properties.popup").get(function() {
+	return `<strong><h5 style="text-align: center;">${this.location}</h5></strong>
+	<a style="text-align: left;"href="/campgrounds/${this.id}">${this.title}</a>
+	<p style="text-align: left;">Price: $${this.price}</p>`
 })
 
 module.exports = mongoose.model("Campground", CampgroundSchema)

@@ -5,8 +5,18 @@ const { deleteFromArvan } = require("../Arvancloud")
 const axios = require("axios")
 
 module.exports.index = async (req, res) => {
-	const campgrounds = await Campground.find({}).sort({ _id: 1 })
-	res.render("campgrounds/index", { campgrounds })
+	const campgrounds = await Campground.find({}).sort({ _id: -1 })
+	const clusterSource = {
+		type: "FeatureCollection",
+		features: campgrounds.map(campground => ({
+			type: "Feature",
+			geometry: campground.geometry,
+			properties: {
+				popup: campground.properties.popup
+			}
+		}))
+	}
+	res.render("campgrounds/index", { campgrounds, clusterSource})
 }
 
 module.exports.renderNewForm = (req, res) => {
