@@ -50,7 +50,7 @@ module.exports.logout = (req, res) => {
 			return next(error)
 		}
 		req.flash("success", ("Logged out successfully!"))
-		res.redirect("/campgrounds")
+		res.redirect("/")
 	})
 
 }
