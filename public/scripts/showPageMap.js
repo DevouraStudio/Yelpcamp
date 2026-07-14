@@ -22,8 +22,16 @@ const map = new maplibregl.Map({
 		'id': 'blank'
 	},
 	center: geometry.coordinates,
-	zoom: 15
+	zoom: 15,
+	rollEnabled: true
 });
+
+map.addControl(new maplibregl.NavigationControl({
+	visualizePitch: true,
+	visualizeRoll: true,
+	showZoom: true,
+	showCompass: true
+}));
 
 const popup = new maplibregl.Popup({ offset: 25 }).setHTML(
 	`<h6 style="padding-top: 1rem;">${campgroundTitle}</h6>

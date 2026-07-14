@@ -4,8 +4,16 @@ const map = new maplibregl.Map({
 	center: [0, 20],
 	zoom: 1,
 	minZoom: 1,
-	fadeDuration: 1 // this is in order for the text and circles to move "as-one"
+	fadeDuration: 1, // this is in order for the text and circles to move "as-one"
+	rollEnabled: true
 });
+
+map.addControl(new maplibregl.NavigationControl({
+	visualizePitch: true,
+	visualizeRoll: true,
+	showMap: true,
+	showCompass: true
+}))
 
 map.on('load', () => {
 	map.addSource('campgrounds', {
