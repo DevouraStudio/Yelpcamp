@@ -1,46 +1,44 @@
 <%- layout("layouts/boilerplate") %>
 
-	<div id="clusterMap" style="width: 100%; height: 500px;"></div>
-
-	<body>
-		<h1 class="text-center mb-3">All campgrounds:</h1>
-		<% for (let campground of campgrounds) {%>
-			<div class="card mb-3">
-				<div class="row">
-					<% if (campground.images && campground.images.length> 0) { %>
+	<div id="clusterMap" class="mb-5"></div>
+	<h1 class="text-center mb-3">All campgrounds:</h1>
+	<% for (let campground of campgrounds) {%>
+		<div class="card mb-3">
+			<div class="row">
+				<% if (campground.images && campground.images.length> 0) { %>
+					<div class="col-md-4">
+						<img src="<%= campground.images[0].url %>" alt="<%= campground.images[0].filename %>"
+							class="img-fluid">
+					</div>
+					<% }else { %>
 						<div class="col-md-4">
-							<img src="<%= campground.images[0].url %>" alt="<%= campground.images[0].filename %>"
-								class="img-fluid">
+							<img src="https://i.postimg.cc/7ZT7Dj92/3BF0FD54-80C1-47E2-B652-9831B7B8F9FC.jpg"
+								alt="No image available!" class="img-fluid">
 						</div>
-						<% }else { %>
-							<div class="col-md-4">
-								<img src="https://i.postimg.cc/7ZT7Dj92/3BF0FD54-80C1-47E2-B652-9831B7B8F9FC.jpg"
-									alt="No image available!" class="img-fluid">
-							</div>
-							<% } %>
-								<div class="col-md-8">
-									<div class="card-body">
-										<h2 class="card-title">
-											<%= campground.title %>
-										</h2>
-										<p class="card-text lead">
-											<%= campground.description %>
-										</p>
-										<p class="card-text lead">
-											<small class="text-muted">
-												<%= campground.location %>
-											</small>
-										</p>
-										<a href="/campgrounds/<%= campground._id %>" class="btn btn-primary">Go to <%=
-												campground.title %></a>
-									</div>
+						<% } %>
+							<div class="col-md-8">
+								<div class="card-body">
+									<h2 class="card-title">
+										<%= campground.title %>
+									</h2>
+									<p class="card-text lead">
+										<%= campground.description %>
+									</p>
+									<p class="card-text lead">
+										<small class="text-muted">
+											<%= campground.location %>
+										</small>
+									</p>
+									<a href="/campgrounds/<%= campground._id %>" class="btn btn-primary">Go to <%=
+											campground.title %></a>
 								</div>
-				</div>
+							</div>
 			</div>
-			<% } %>
+		</div>
+		<% } %>
 
-				<script>
-					const clusterSource = <%- JSON.stringify(clusterSource) %>
-				</script>
+			<script>
+				const clusterSource = <%- JSON.stringify(clusterSource) %>
+			</script>
 
-				<script src="/scripts/clusterMap.js"></script>
+			<script src="/scripts/clusterMap.js"></script>
