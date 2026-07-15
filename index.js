@@ -32,6 +32,8 @@ const passport = require("passport")
 
 const LocalStrategy = require("passport-local")
 
+const mongoSanitize = require("express-mongo-sanitize")
+
 const sessionConfig = {
 	secret: "notasuitablesecretstring",
 	resave: false,
@@ -70,6 +72,8 @@ app.use(express.static(path.join(__dirname, "public")))
 app.use(session(sessionConfig))
 
 app.use(flash())
+
+app.use(mongoSanitize())
 
 app.use(passport.initialize())
 
