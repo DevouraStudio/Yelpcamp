@@ -1,8 +1,17 @@
 const Campground = require("./models/campground")
 const { campgroundSchema } = require("./schemas.js")
 const ExpressError = require("./utilities/ExpressError")
+const { reviewSchema } = require("./schemas.js")
 module.exports.validateCampground = (req, res, next) => {
 	const { error } = campgroundSchema.validate(req.body)
+	if (error) {
+		const msg = error.details.map(el => el.message).join(",")
+		throw new ExpressError(msg, 400)
+	}
+	next()
+}
+module.exports.validateReview = (req, res, next) => {
+	const { error } = reviewSchema.validate(req.body)
 	if (error) {
 		const msg = error.details.map(el => el.message).join(",")
 		throw new ExpressError(msg, 400)
