@@ -35,11 +35,13 @@ const LocalStrategy = require("passport-local")
 const mongoSanitize = require("express-mongo-sanitize")
 
 const sessionConfig = {
+	name: "Yelpcamp-session",
 	secret: "notasuitablesecretstring",
 	resave: false,
 	saveUninitialized: true,
 	cookie: {
 		httpOnly: true,
+		// secure: true,
 		expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
 		maxAge: 7 * 24 * 60 * 60 * 1000
 	}
