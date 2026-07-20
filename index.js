@@ -2,6 +2,47 @@ if (process.env.NODE_ENV !== "production") {
 	require("dotenv").config()
 }
 
+const sessionConfig = {
+	name: "Yelpcamp-session",
+	secret: "notasuitablesecretstring",
+	resave: false,
+	saveUninitialized: true,
+	cookie: {
+		httpOnly: true,
+		// secure: true,
+		expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
+		maxAge: 7 * 24 * 60 * 60 * 1000
+	}
+}
+
+const scriptSrcUrls = [
+	"https://stackpath.bootstrapcdn.com",
+	"https://unpkg.com",
+	"https://kit.fontawesome.com",
+	"https://cdnjs.cloudflare.com",
+	"https://cdn.jsdelivr.net",
+	"https://tile.openstreetmap.org"
+];
+
+const styleSrcUrls = [
+	"https://kit-free.fontawesome.com",
+	"https://cdn.jsdelivr.net",
+	"https://stackpath.bootstrapcdn.com",
+	"https://unpkg.com",
+	"https://fonts.googleapis.com",
+	"https://use.fontawesome.com",
+	"https://demotiles.maplibre.org",
+	"https://tile.openstreetmap.org"
+];
+
+const connectSrcUrls = [
+	"https://unpkg.com",
+	"https://demotiles.maplibre.org",
+	"https://tile.openstreetmap.org"
+];
+
+const fontSrcUrls = [];
+
 const express = require("express")
 
 const app = express()
@@ -34,18 +75,7 @@ const LocalStrategy = require("passport-local")
 
 const mongoSanitize = require("express-mongo-sanitize")
 
-const sessionConfig = {
-	name: "Yelpcamp-session",
-	secret: "notasuitablesecretstring",
-	resave: false,
-	saveUninitialized: true,
-	cookie: {
-		httpOnly: true,
-		// secure: true,
-		expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
-		maxAge: 7 * 24 * 60 * 60 * 1000
-	}
-}
+const helmet = require("helmet")
 
 app.set("view engine", "ejs")
 
@@ -76,6 +106,34 @@ app.use(session(sessionConfig))
 app.use(flash())
 
 app.use(mongoSanitize())
+
+app.use(helmet({
+	 crossOriginEmbedderPolicy: false
+}))
+
+app.use(
+	helmet.contentSecurityPolicy({
+		directives: {
+			defaultSrc: [],
+			connectSrc: ["'self'", ...connectSrcUrls],
+			scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
+			styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+			workerSrc: ["'self'", "blob:"],
+			childSrc: ["blob:"],
+			objectSrc: [],
+			imgSrc: [
+				"'self'",
+				"blob:",
+				"data:",
+				process.env.ARVAN_ENDPOINT,
+				"https://i.postimg.cc",
+				"https://loremflickr.com",
+				"https://fastly.picsum.photos"
+			],
+			fontSrc: ["'self'", ...fontSrcUrls],
+		},
+	})
+);
 
 app.use(passport.initialize())
 
