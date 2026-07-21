@@ -2,18 +2,7 @@ if (process.env.NODE_ENV !== "production") {
 	require("dotenv").config()
 }
 
-const sessionConfig = {
-	name: "Yelpcamp-session",
-	secret: "notasuitablesecretstring",
-	resave: false,
-	saveUninitialized: true,
-	cookie: {
-		httpOnly: true,
-		// secure: true,
-		expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
-		maxAge: 7 * 24 * 60 * 60 * 1000
-	}
-}
+const dbUrl = "mongodb://localhost:27017/Yelpcamp"
 
 const scriptSrcUrls = [
 	"https://stackpath.bootstrapcdn.com",
@@ -77,13 +66,15 @@ const mongoSanitize = require("express-mongo-sanitize")
 
 const helmet = require("helmet")
 
+const MongoStore = require("connect-mongo")(session)
+
 app.set("view engine", "ejs")
 
 app.set("views", path.join(__dirname, "views"))
 
 app.engine("ejs", ejsMate)
 
-mongoose.connect("mongodb://localhost:27017/Yelpcamp", {
+mongoose.connect(dbUrl, {
 	useNewUrlParser: true,
 	useCreateIndex: true,
 	useUnifiedTopology: true
@@ -100,6 +91,30 @@ app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride("_method"))
 
 app.use(express.static(path.join(__dirname, "public")))
+
+const store = new MongoStore({
+	url: dbUrl,
+	secret: "notasuitablesecretstring",
+	touchAfter: 24 * 3600
+})
+
+store.on("error", function(e) {
+	console.log(e, "Mongo session store is not working properly!")
+})
+
+const sessionConfig = {
+	store,
+	name: "Yelpcamp-session",
+	secret: "notasuitablesecretstring",
+	resave: false,
+	saveUninitialized: true,
+	cookie: {
+		httpOnly: true,
+		// secure: true,
+		expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
+		maxAge: 7 * 24 * 60 * 60 * 1000
+	}
+}
 
 app.use(session(sessionConfig))
 
