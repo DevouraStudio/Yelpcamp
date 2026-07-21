@@ -1,21 +1,36 @@
-<%- layout("layouts/boilerplate") %>
-<h1 class="text-center mb-3">Login</h1>
-<form action="/login" class="validated-form" method="POST" novalidate>
-	<div class="mb-3">
-		<label for="username" class="form-label">Username:</label>
-		<input type="text" class="form-control" placeholder="Username" id="username"
-			name="username" required>
-		<div class="valid-feedback">
-			Looks good!
+<% layout('layouts/boilerplate')%>
+
+	<div class="container d-flex justify-content-center align-items-center mb-5">
+		<div class="row">
+			<div class="col-md-6 offset-md-3 col-xl-4 offset-xl-4">
+				<div class="card shadow">
+					<img src="https://yelpcamp.s3.ir-thr-at1.arvanstorage.ir/yelpcamp%2FAuth.jpeg?versionId=" alt=""
+						class="card-img-top" />
+					<div class="card-body">
+						<h5 class="card-title">Login</h5>
+						<form action="/login" method="POST" class="validated-form" novalidate>
+							<div class="mb-3">
+								<label class="form-label" for="username">Username:</label>
+								<input class="form-control" type="text" id="username" name="username" autofocus
+									required>
+								<div class="valid-feedback">
+									Looks good!
+								</div>
+							</div>
+
+							<div class="mb-3">
+								<label class="form-label" for="password">Password:</label>
+								<input class="form-control" type="password" id="password" name="password" required>
+								<div class="valid-feedback">
+									Looks good!
+								</div>
+							</div>
+							<div class="d-grid">
+								<button class="btn btn-success">Login</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
-	<div class="mb-3">
-		<label for="password" class="form-label">Password:</label>
-		<input type="password" class="form-control" placeholder="password" id="password"
-			name="password" required>
-		<div class="valid-feedback">
-			Looks good!
-		</div>
-	</div>
-	<button class="btn btn-success">login</button>
-</form>
