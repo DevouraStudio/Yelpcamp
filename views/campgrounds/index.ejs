@@ -1,5 +1,8 @@
 <%- layout("layouts/boilerplate") %>
 
+	<link href="https://unpkg.com/maplibre-gl@^5.24.0/dist/maplibre-gl.css" rel="stylesheet" />
+	<script src="https://unpkg.com/maplibre-gl@^5.24.0/dist/maplibre-gl.js"></script>
+
 	<div id="clusterMap" class="mb-5"></div>
 	<h1 class="text-center mb-3">All campgrounds:</h1>
 	<% for (let campground of campgrounds) {%>
