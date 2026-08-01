@@ -16,7 +16,12 @@ module.exports.index = async (req, res) => {
 			}
 		}))
 	}
-	res.render("campgrounds/index", { campgrounds, clusterSource})
+	if (campgrounds) {
+		res.locals.success = `${campgrounds.length} campgrounds are found successfully!`
+	} else {
+		res.locals.error = "No campgrounds are found!"
+	}
+	res.render("campgrounds/index", { campgrounds, clusterSource, searchTerm: null })
 }
 
 module.exports.renderNewForm = (req, res) => {
@@ -77,4 +82,30 @@ module.exports.deleteCampground = async (req, res) => {
 	await Campground.findByIdAndDelete(req.params.id, { useFindAndModify: false })
 	req.flash("success", "Campground deleted successfully!")
 	res.redirect("/campgrounds")
+}
+
+module.exports.searchCampground = async (req, res) => {
+	let clusterSource;
+	const { q } = req.query
+	function escapeRegex(string) {
+		return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+	}
+	const safeQuery = escapeRegex(q)
+	const campgrounds = await Campground.find({ title: { $regex: safeQuery, $options: "i" } })
+	if (campgrounds && campgrounds.length >= 1) {
+		clusterSource = {
+			type: "FeatureCollection",
+			features: campgrounds.map(campground => ({
+				type: "Feature",
+				geometry: campground.geometry,
+				properties: {
+					popup: campground.properties.popup
+				}
+			}))
+		}
+		res.locals.success = `Search result: ${campgrounds.length} campground(s) found!`
+	} else {
+		res.locals.error = "No campgrounds found! Please check your search term and try again!"
+	}
+	res.render("campgrounds/index", { campgrounds, clusterSource, searchTerm: q })
 }
