@@ -1,55 +1,78 @@
 <%- layout("layouts/boilerplate") %>
 
-	<link href="https://unpkg.com/maplibre-gl@^5.24.0/dist/maplibre-gl.css" rel="stylesheet" />
-	<script src="https://unpkg.com/maplibre-gl@^5.24.0/dist/maplibre-gl.js"></script>
+	<% if (campgrounds && campgrounds.length !==0) { %>
+		<link href="https://unpkg.com/maplibre-gl@^5.24.0/dist/maplibre-gl.css" rel="stylesheet" />
+		<script src="https://unpkg.com/maplibre-gl@^5.24.0/dist/maplibre-gl.js"></script>
 
-	<div id="clusterMap" class="mb-5"></div>
-	<h1 class="text-center mb-3">All campgrounds:</h1>
-	<div class="container w-50">
-		<form action="/campgrounds/search" class="input-group mb-3 d-flex justify-content-center validated-form"
-			novalidate>
-			<input type="text" class="form-control" placeholder="Search" aria-label="Search bar"
-				aria-describedby="searchButton" name="q" placeholder="Search" value="<%= searchTerm %>" required>
-			<button class="btn btn-warning" type="submit" id="searchButton">Search</button>
-		</form>
-	</div>
-	<% for (let campground of campgrounds) { %>
-		<div class="card mb-3">
-			<div class="row">
-				<% if (campground.images && campground.images.length> 0) { %>
-					<div class="col-md-4">
-						<img src="<%= campground.images[0].url %>" alt="<%= campground.images[0].filename %>"
-							class="img-fluid">
-					</div>
-					<% }else { %>
-						<div class="col-md-4">
-							<img src="https://i.postimg.cc/7ZT7Dj92/3BF0FD54-80C1-47E2-B652-9831B7B8F9FC.jpg"
-								alt="No image available!" class="img-fluid">
-						</div>
-						<% } %>
-							<div class="col-md-8">
-								<div class="card-body">
-									<h2 class="card-title">
-										<%= campground.title %>
-									</h2>
-									<p class="card-text lead">
-										<%= campground.description %>
-									</p>
-									<p class="card-text lead">
-										<small class="text-muted">
-											<%= campground.location %>
-										</small>
-									</p>
-									<a href="/campgrounds/<%= campground._id %>" class="btn btn-primary">Go to <%=
-											campground.title %></a>
-								</div>
-							</div>
-			</div>
-		</div>
+		<div id="clusterMap" class="mb-5"></div>
 		<% } %>
+			<h1 class="text-center mb-3">All campgrounds:</h1>
+			<div class="container w-50">
+				<form action="/campgrounds/search" class="input-group mb-3 d-flex justify-content-center validated-form"
+					novalidate>
+					<input type="text" class="form-control" placeholder="Search" aria-label="Search bar"
+						aria-describedby="searchButton" name="q" placeholder="Search" value="<%= searchTerm %>"
+						required>
+					<button class="btn btn-warning" type="submit" id="searchButton">Search</button>
+				</form>
+			</div>
 
-			<script>
-				const clusterSource = <%- JSON.stringify(clusterSource) %>
-			</script>
+			<% if (campgrounds && campgrounds.length !==0) { %>
+				<% for (let campground of campgrounds) { %>
+					<div class="card mb-3">
+						<div class="row">
+							<% if (campground.images && campground.images.length> 0) { %>
+								<div class="col-md-4">
+									<img src="<%= campground.images[0].url %>"
+										alt="<%= campground.images[0].filename %>" class="img-fluid">
+								</div>
+								<% }else { %>
+									<div class="col-md-4">
+										<img src="https://i.postimg.cc/7ZT7Dj92/3BF0FD54-80C1-47E2-B652-9831B7B8F9FC.jpg"
+											alt="No image available!" class="img-fluid">
+									</div>
+									<% } %>
+										<div class="col-md-8">
+											<div class="card-body">
+												<h2 class="card-title">
+													<%= campground.title %>
+												</h2>
+												<p class="card-text lead">
+													<%= campground.description %>
+												</p>
+												<p class="card-text lead">
+													<small class="text-muted">
+														<%= campground.location %>
+													</small>
+												</p>
+												<a href="/campgrounds/<%= campground._id %>" class="btn btn-primary">Go
+													to <%= campground.title %></a>
+											</div>
+										</div>
+						</div>
+					</div>
+					<% } %>
+						<% }else { %>
+							<div class="alert alert-warning" role="alert">
+								<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+									class="bi bi-exclamation-diamond-fill" viewBox="0 0 16 16">
+									<path
+										d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098zM8 4c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995A.905.905 0 0 1 8 4m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2" />
+								</svg>
+								<h2 class="alert-heading text-center">No campgrounds found!</h2>
+								<hr>
+								<p class="text-center"><strong>CAUTION:</strong> In terms of searching, if you cannot
+									find any
+									specific campground that you want
+									please
+									check your search term and try again!</p>
+							</div>
+							<% } %>
 
-			<script src="/scripts/clusterMap.js"></script>
+								<% if (campgrounds && campgrounds.length !==0) { %>
+									<script>
+										const clusterSource = <%- JSON.stringify(clusterSource) %>
+									</script>
+
+									<script src="/scripts/clusterMap.js"></script>
+									<% } %>
