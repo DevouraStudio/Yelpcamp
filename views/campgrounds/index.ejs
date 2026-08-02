@@ -5,7 +5,15 @@
 
 	<div id="clusterMap" class="mb-5"></div>
 	<h1 class="text-center mb-3">All campgrounds:</h1>
-	<% for (let campground of campgrounds) {%>
+	<div class="container w-50">
+		<form action="/campgrounds/search" class="input-group mb-3 d-flex justify-content-center validated-form"
+			novalidate>
+			<input type="text" class="form-control" placeholder="Search" aria-label="Search bar"
+				aria-describedby="searchButton" name="q" placeholder="Search" value="<%= searchTerm %>" required>
+			<button class="btn btn-warning" type="submit" id="searchButton">Search</button>
+		</form>
+	</div>
+	<% for (let campground of campgrounds) { %>
 		<div class="card mb-3">
 			<div class="row">
 				<% if (campground.images && campground.images.length> 0) { %>
