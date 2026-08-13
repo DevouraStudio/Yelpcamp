@@ -52,5 +52,15 @@ module.exports.logout = (req, res) => {
 		req.flash("success", ("Logged out successfully!"))
 		res.redirect("/")
 	})
+}
 
+module.exports.renderGoogleAuth = passport.authenticate("google", { scope: ["profile", "email", "openid"] })
+
+
+module.exports.googleAuthLogin = passport.authenticate("google", { failureRedirect: "/login", failureFlash: true })
+
+
+module.exports.googleAuthRedirect = function (req, res) {
+	req.flash("success", "Successfully logged in with Google!")
+	res.redirect('/');
 }

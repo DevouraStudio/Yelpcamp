@@ -68,6 +68,8 @@ const helmet = require("helmet")
 
 const MongoStore = require("connect-mongo")(session)
 
+const GoogleStrategy = require("passport-google-oauth20").Strategy
+
 app.set("view engine", "ejs")
 
 app.set("views", path.join(__dirname, "views"))
@@ -98,7 +100,7 @@ const store = new MongoStore({
 	touchAfter: 24 * 3600
 })
 
-store.on("error", function(e) {
+store.on("error", function (e) {
 	console.log(e, "Mongo session store is not working properly!")
 })
 
@@ -123,7 +125,7 @@ app.use(flash())
 app.use(mongoSanitize())
 
 app.use(helmet({
-	 crossOriginEmbedderPolicy: false
+	crossOriginEmbedderPolicy: false
 }))
 
 app.use(
@@ -156,9 +158,47 @@ app.use(passport.session())
 
 passport.use(new LocalStrategy(User.authenticate()))
 
-passport.serializeUser(User.serializeUser())
+passport.use(new GoogleStrategy({
+	clientID: process.env.GOOGLE_OAUTH_CLIENT_ID,
+	clientSecret: process.env.GOOGLE_OAUTH_CLIENT_SECRET,
+	callbackURL: "/auth/google/callback"
+},
+	async function (accessToken, refreshToken, profile, done) {
+		try {
+			const email = profile.emails[0].value
+			const user = await User.findOne({ email })
+			if (user) {
+				if (!user.googleId) {
+					user.googleId = profile.id
+					await user.save()
+				}
+				return done(null, user)
+			} else {
+				const newUser = await User.create({ email, googleId: profile.id, username: profile.displayName })
+				return done(null, newUser)
+			}
+		} catch (err) {
+			return done(err)
+		}
+	}
+))
 
-passport.deserializeUser(User.deserializeUser())
+passport.serializeUser(
+	(user, done) => {
+		done(null, user.id)
+	}
+)
+
+passport.deserializeUser(
+	async (id, done) => {
+		try {
+			const user = await User.findById(id)
+			done(null, user)
+		} catch (err) {
+			done(err)
+		}
+	}
+)
 
 app.use((req, res, next) => {
 	res.locals.currentUser = req.user

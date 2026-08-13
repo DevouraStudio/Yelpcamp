@@ -11,6 +11,10 @@ router.route("/register")
 	.get(users.renderLogin)
 	.post(users.login)
 
+router.get("/auth/google", users.renderGoogleAuth)	
+
+router.get("/auth/google/callback", users.googleAuthLogin, users.googleAuthRedirect)
+
 router.get("/logout", users.logout)
 
 module.exports = router
