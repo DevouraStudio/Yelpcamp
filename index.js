@@ -148,6 +148,7 @@ app.use(
 				"https://fastly.picsum.photos"
 			],
 			fontSrc: ["'self'", ...fontSrcUrls],
+			formAction: ["'self'", "https://accounts.google.com"]
 		},
 	})
 );
